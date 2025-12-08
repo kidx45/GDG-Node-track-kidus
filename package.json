@@ -1,0 +1,22 @@
+{
+  "name": "gdg-node-track-kidus",
+  "version": "1.0.0",
+  "description": "GDG tasks",
+  "main": "track1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kidx45/GDG-Node-track-kidus.git"
+  },
+  "author": "Kidus Tessema",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kidx45/GDG-Node-track-kidus/issues"
+  },
+  "homepage": "https://github.com/kidx45/GDG-Node-track-kidus#readme",
+  "devDependencies": {
+    "@types/node": "^24.10.1"
+  }
+}
