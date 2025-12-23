@@ -16,7 +16,7 @@ It is done using Express and return a plain text as response.`)
 app.get('/students/:studentid', (req,res)=>{
     var result = {
         Query: req.query.department,
-        Parameter: req.params.studentid
+        Param: req.params.studentid
     }
     res.status(200).json(result)
 })
