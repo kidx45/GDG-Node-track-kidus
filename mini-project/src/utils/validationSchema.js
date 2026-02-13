@@ -4,7 +4,7 @@ export const productSchema = Joi.object({
   name: Joi.string().min(5).required(),
   description: Joi.string().min(10).required(),
   price: Joi.number().min(1).required(),
-  stock: Joi.number().integer().min(0).required(),
+  stock: Joi.number().integer().min(1).required(),
   category: Joi.string().min(5).required(),
   imageUrl: Joi.string().uri().required(),
 });
@@ -12,7 +12,6 @@ export const productSchema = Joi.object({
 export const cartSchema = Joi.object({
   reqProduct: Joi.object({
     productId: Joi.string().required(),
-    productName: Joi.string().min(5).required(),
     productQuantity: Joi.number().integer().min(1).required(),
   }).required(),
 });

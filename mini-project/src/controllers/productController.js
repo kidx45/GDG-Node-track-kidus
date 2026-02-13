@@ -67,27 +67,20 @@ export const updateProductById = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
   const { id } = req.params;
-  const {
-    reqName,
-    reqDescription,
-    reqPrice,
-    reqStock,
-    reqCategory,
-    reqImageUrl,
-  } = req.body;
+  const { name, description, price, stock, category, imageUrl } = req.body;
   try {
-    const updatedProduct = await Product.findOneAndUpdate({
-      productId: id,
-      name: reqName,
-      description: reqDescription,
-      price: reqPrice,
-      stock: reqStock,
-      category: reqCategory,
-      imageUrl: reqImageUrl,
-    });
+    const updatedProduct = await Product.findOne({ productId: id });
     if (!updatedProduct) {
       return res.status(404).json({ error: "Product not found" });
     }
+    updatedProduct.name = name;
+    updatedProduct.description = description;
+    updatedProduct.price = price;
+    updatedProduct.stock = stock;
+    updatedProduct.category = category;
+    updatedProduct.imageUrl = imageUrl;
+
+    await updatedProduct.save();
     return res.status(200).json(updatedProduct);
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
