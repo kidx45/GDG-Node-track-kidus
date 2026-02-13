@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const productSchema = new mongoose.Schema({
+const productModel = new mongoose.Schema({
   productId: {
     type: String,
     required: true,
@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-const cartSchema = new mongoose.Schema(
+const cartModel = new mongoose.Schema(
   {
     userId: {
       type: String,
@@ -25,7 +25,7 @@ const cartSchema = new mongoose.Schema(
       unique: true,
     },
     products: {
-      type: [productSchema],
+      type: [productModel],
       required: true,
       validate: {
         validator: (arr) => arr.length > 0,
@@ -36,5 +36,4 @@ const cartSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const Cart = mongoose.model("Cart", cartSchema);
-export default Cart;
+export const Cart = mongoose.model("Cart", cartModel);

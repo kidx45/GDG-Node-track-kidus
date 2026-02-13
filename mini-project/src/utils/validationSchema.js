@@ -25,6 +25,7 @@ export const cartSchema = Joi.object({
 });
 
 export const orderSchema = Joi.object({
+  orderId: Joi.string().required(),
   user: Joi.array().items(
     Joi.object({
       userId: Joi.string().required(),

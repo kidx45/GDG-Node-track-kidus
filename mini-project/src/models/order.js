@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+const userModel = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const productSchema = new mongoose.Schema({
+const productModel = new mongoose.Schema({
   productId: {
     type: String,
     required: true,
@@ -36,15 +36,20 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-const orderSchema = new mongoose.Schema(
+const orderModel = new mongoose.Schema(
   {
+    orderId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     user: {
-      type: [userSchema],
+      type: [userModel],
       required: true,
     },
 
     product: {
-      type: [productSchema],
+      type: [productModel],
       required: true,
       validate: {
         validator: (arr) => arr.length > 0,
@@ -61,5 +66,4 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const Order = mongoose.model("Order", orderSchema);
-export default Order;
+export const Order = mongoose.model("Order", orderModel);
