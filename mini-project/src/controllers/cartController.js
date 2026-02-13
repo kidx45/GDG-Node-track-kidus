@@ -1,36 +1,37 @@
 import Joi from "joi";
 import { cartSchema } from "../utils/validationSchema";
 import { Cart } from "../models/cart";
+import { Product } from "../models/product";
 
 export const getCart = async (req, res) => {
   try {
-    const cart = await Cart.find();
+    const cart = await Cart.findOne();
     return res.status(200).json(cart);
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
 };
 
-export const create = async (req, res) => {
+export const AddProductToCart = async (req, res) => {
   const { error } = cartSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { products } = req.body;
-
   try {
-    let cart = await Cart.findOne({ userId: userId });
-
-    if (cart) {
-      return res
-        .status(400)
-        .json({ error: "Cart already exists for this user" });
-    } else {
-      cart = new Cart({ userId, products });
-      await cart.save();
-      return res.status(201).json(cart);
+    const { reqProduct } = req.body;
+    const product = await Product.findOne({ productId: reqProduct.productId });
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
     }
+
+    if (product.stock < reqProduct.productQuantity) {
+      return res.status(400).json({ error: "Insufficient stock" });
+    }
+    let cart = await Cart.findOne();
+    cart.products.push(reqProduct);
+    await cart.save();
+    return res.status(200).json(cart);
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
@@ -42,15 +43,25 @@ export const updateCart = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { products } = req.body;
-
   try {
-    const cart = await Cart.findOne({ userId: userId });
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
+    const { reqProduct } = req.body;
+    const product = await Product.findOne({ productId: reqProduct.productId });
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
     }
 
-    cart.products = products;
+    if (product.stock < reqProduct.productQuantity) {
+      return res.status(400).json({ error: "Insufficient stock" });
+    }
+
+    let cart = await Cart.findOne();
+    const index = cart.products.findIndex(
+      (p) => p.productId === reqProduct.productId,
+    );
+    if (index === -1) {
+      return res.status(404).json({ error: "Product not found in cart" });
+    }
+    cart.products[index] = reqProduct;
     await cart.save();
     return res.status(200).json(cart);
   } catch (err) {
@@ -59,17 +70,14 @@ export const updateCart = async (req, res) => {
 };
 
 export const deleteFromCartByProductId = async (req, res) => {
-  const { userId, productId } = req.params;
+  const { productId } = req.params;
   try {
-    const cart = await Cart.findOne({ userId });
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
+    const cart = await Cart.findOne();
+    const index = cart.products.findIndex((p) => p.productId === productId);
+    if (index === -1) {
+      return res.status(404).json({ error: "Product not found in cart" });
     }
-
-    cart.products = cart.products.filter(
-      (product) => product.productId !== productId,
-    );
-
+    cart.products.splice(index, 1);
     await cart.save();
     return res.status(200).json(cart);
   } catch (err) {

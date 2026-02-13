@@ -22,10 +22,6 @@ const cartModel = new mongoose.Schema(
     products: {
       type: [productModel],
       required: true,
-      validate: {
-        validator: (arr) => arr.length > 0,
-        message: "At least one product is required",
-      },
     },
   },
   { timestamps: true },

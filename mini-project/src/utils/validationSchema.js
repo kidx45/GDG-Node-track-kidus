@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { Product } from "../models/product";
 
 export const productSchema = Joi.object({
   name: Joi.string().min(5).required(),
@@ -10,21 +11,14 @@ export const productSchema = Joi.object({
 });
 
 export const cartSchema = Joi.object({
-  userId: Joi.string().required(),
-  products: Joi.array()
-    .items(
-      Joi.object({
-        productId: Joi.string().required(),
-        productName: Joi.string().min(5).required(),
-        productQuantity: Joi.number().min(1).required(),
-      }),
-    )
-    .min(1)
-    .required(),
+  reqProduct: Joi.object({
+    productId: Joi.string().required(),
+    productName: Joi.string().min(5).required(),
+    productQuantity: Joi.number().integer().min(1).required(),
+  }).required(),
 });
 
 export const orderSchema = Joi.object({
-  userId: Joi.string().required(),
   userName: Joi.string().min(3).required(),
   userAddress: Joi.string().required(),
 });

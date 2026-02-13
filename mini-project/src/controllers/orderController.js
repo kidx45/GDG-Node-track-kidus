@@ -7,7 +7,7 @@ import { Product } from "../models/product";
 
 export const getAllOrder = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.findOne();
     return res.status(200).json(orders);
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
@@ -33,31 +33,42 @@ export const createOrder = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { userId, userName, userAddress } = req.body;
-  const userCart = await Cart.findOne({ userId: userId });
-  if (!userCart) {
-    return res.status(404).json({ error: "User not found in cart" });
-  }
-
-  const orderId = nanoid(7);
   try {
+    const { userName, userAddress } = req.body;
+    const userCart = await Cart.findOne();
+    let total = 0;
+
+    for (const item of userCart.products) {
+      const product = await Product.findOne({ productId: item.productId });
+      if (product) {
+        total += item.productQuantity * product.price;
+      }
+    }
+
+    const orderId = nanoid(7);
     const newOrder = new Order({
       orderId,
       user: [
         {
-          userId,
           userName,
           userAddress,
         },
       ],
       products: userCart.products,
-      totalPrice: userCart.products.reduce(
-        (total, item) => total + item.productQuantity * item.productPrice,
-        0,
-      ),
+      totalPrice: total,
     });
 
+    for (const item of userCart.products) {
+      const product = await Product.findOne({ productId: item.productId });
+      if (product) {
+        product.stock -= item.productQuantity;
+        await product.save();
+      }
+    }
+
     await newOrder.save();
+    userCart.products = [];
+    await userCart.save();
     return res.status(201).json(newOrder);
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
