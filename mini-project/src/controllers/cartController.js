@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { cartSchema } from "../utils/validationSchema";
-import { Cart } from "../models/cart";
-import { Product } from "../models/product";
+import { cartSchema } from "../utils/validationSchema.js";
+import { Cart } from "../models/cart.js";
+import { Product } from "../models/product.js";
 
 export const getCart = async (req, res) => {
   try {

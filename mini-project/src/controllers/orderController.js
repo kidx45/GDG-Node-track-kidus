@@ -1,9 +1,9 @@
 import Joi from "joi";
-import { orderSchema } from "../utils/validationSchema";
-import { Order } from "../models/order";
-import { Cart } from "../models/cart";
+import { orderSchema } from "../utils/validationSchema.js";
+import { Order } from "../models/order.js";
+import { Cart } from "../models/cart.js";
 import { nanoid } from "nanoid";
-import { Product } from "../models/product";
+import { Product } from "../models/product.js";
 
 export const getAllOrder = async (req, res) => {
   try {

@@ -1,5 +1,4 @@
 import Joi from "joi";
-import { Product } from "../models/product";
 
 export const productSchema = Joi.object({
   name: Joi.string().min(5).required(),

@@ -1,6 +1,6 @@
 import Joi from "joi";
-import { productSchema } from "../utils/validationSchema";
-import { Product } from "../models/product";
+import { productSchema } from "../utils/validationSchema.js";
+import { Product } from "../models/product.js";
 import { nanoid } from "nanoid";
 
 export const getProducts = async (req, res) => {
@@ -89,6 +89,19 @@ export const updateProductById = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
     return res.status(200).json(updatedProduct);
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const deleteProductById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedProduct = await Product.findOneAndDelete({ productId: id });
+    if (!deletedProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    return res.status(200).json({ message: "Product deleted successfully" });
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
