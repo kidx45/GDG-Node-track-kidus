@@ -62,6 +62,10 @@ export const getProductById = async (req, res) => {
 };
 
 export const updateProductById = async (req, res) => {
+  const { error } = productSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
   const { id } = req.params;
   const {
     reqName,

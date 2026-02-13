@@ -48,7 +48,7 @@ const orderModel = new mongoose.Schema(
       required: true,
     },
 
-    product: {
+    products: {
       type: [productModel],
       required: true,
       validate: {
