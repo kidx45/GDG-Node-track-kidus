@@ -35,11 +35,20 @@ export const AddProductToCart = async (req, res) => {
       cart = await Cart.create({ products: [] });
     }
 
-    cart.products.push({
-      productId: reqProduct.productId,
-      productName: product.name,
-      productQuantity: reqProduct.productQuantity,
-    });
+    const existingProduct = cart.products.find(
+      (p) => p.productId === reqProduct.productId,
+    );
+    if (existingProduct) {
+      existingProduct.productQuantity += reqProduct.productQuantity;
+    } else {
+      cart.products.push({
+        productId: reqProduct.productId,
+        productName: product.name,
+        productQuantity: reqProduct.productQuantity,
+      });
+    }
+    product.stock -= reqProduct.productQuantity;
+    await product.save();
 
     await cart.save();
     return res.status(200).json(cart);
@@ -55,24 +64,31 @@ export const updateCart = async (req, res) => {
   }
 
   try {
-    const { Product } = req.body;
-    const product = await Product.findOne({ productId: Product.productId });
+    const { reqProduct } = req.body;
+    const product = await Product.findOne({ productId: reqProduct.productId });
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    if (product.stock < Product.productQuantity) {
+    if (product.stock < reqProduct.productQuantity) {
       return res.status(400).json({ error: "Insufficient stock" });
     }
 
     let cart = await Cart.findOne();
-    const index = cart.products.findIndex(
-      (p) => p.productId === Product.productId,
+    if (!cart) {
+      cart = await Cart.create({ products: [] });
+    }
+    const existingProduct = cart.products.find(
+      (p) => p.productId === reqProduct.productId,
     );
-    if (index === -1) {
+    if (!existingProduct) {
       return res.status(404).json({ error: "Product not found in cart" });
     }
-    cart.products[index] = Product;
+    product.stock += existingProduct.productQuantity;
+    existingProduct.productQuantity = reqProduct.productQuantity;
+
+    product.stock -= reqProduct.productQuantity;
+    await product.save();
     await cart.save();
     return res.status(200).json(cart);
   } catch (err) {
@@ -87,6 +103,11 @@ export const deleteFromCartByProductId = async (req, res) => {
     const index = cart.products.findIndex((p) => p.productId === productId);
     if (index === -1) {
       return res.status(404).json({ error: "Product not found in cart" });
+    }
+    let product = await Product.findOne({ productId });
+    if (product) {
+      product.stock += cart.products[index].productQuantity;
+      await product.save();
     }
     cart.products.splice(index, 1);
     await cart.save();

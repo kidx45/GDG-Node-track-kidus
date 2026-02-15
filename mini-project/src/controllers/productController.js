@@ -28,6 +28,10 @@ export const createProduct = async (req, res) => {
   }
 
   const { name, description, price, stock, category, imageUrl } = req.body;
+  const existingProduct = await Product.findOne({ name });
+  if (existingProduct) {
+    return res.status(400).json({ error: "Product name must be unique" });
+  }
   const productId = nanoid(7);
 
   try {

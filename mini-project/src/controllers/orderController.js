@@ -58,16 +58,8 @@ export const createOrder = async (req, res) => {
       totalPrice: total,
     });
 
-    for (const item of userCart.products) {
-      const product = await Product.findOne({ productId: item.productId });
-      if (product) {
-        product.stock -= item.productQuantity;
-        await product.save();
-      }
-    }
-
-    await newOrder.save();
     userCart.products = [];
+    await newOrder.save();
     await userCart.save();
     return res.status(201).json(newOrder);
   } catch (err) {
