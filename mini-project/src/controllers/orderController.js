@@ -10,7 +10,7 @@ export const getAllOrder = async (req, res) => {
     const orders = await Order.find();
     return res.status(200).json(orders);
   } catch (err) {
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -23,7 +23,7 @@ export const getOrderById = async (req, res) => {
     }
     return res.status(200).json(order);
   } catch (err) {
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -45,14 +45,9 @@ export const createOrder = async (req, res) => {
     for (const item of userCart.products) {
       const product = productList.find((p) => p.productId == item.productId);
       if (product) {
-        console.log(
-          `Product: ${product.name}, Quantity: ${item.productQuantity}, Price: ${product.price}`,
-        );
         total += item.productQuantity * product.price;
       }
     }
-
-    console.log("Total price:", total);
 
     const orderId = nanoid(7);
     const newOrder = new Order({
