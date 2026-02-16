@@ -1,93 +1,36 @@
 # GDG Node.js Track – Learning Tasks
 
-🚀 A personal repository created as part of the **GDG Node.js Track**.  
-This repo contains hands-on tasks focused on learning **core Node.js concepts** by building servers and APIs **without frameworks**.
+This repository is part of the **GDG Node.js Track** and contains hands-on learning tasks focused on building a strong foundation in **Node.js**, **Express**, and **RESTful API development**.
 
-Each task is organized clearly and may later be moved into **separate branches** as the learning progresses.
-
----
-
-## 📂 Repository Structure
-
-- `main` – Overview and completed tasks
-- `task-1` – Basic HTTP server & Student REST API  
-*(More tasks will be added in the future)*
+Each task is organized clearly and may be moved into **separate branches** as the learning journey progresses.
 
 ---
 
-## ✅ Task 1: Basic Node.js HTTP Server & REST API
+## Project Structure
 
-This task focuses on understanding:
-- Core Node.js HTTP module
-- Request & response handling
-- URL routing
-- Working with JSON data
-- Basic REST principles
+- **[`Task 1`](./task1/README.md)** – Basic HTTP server and Student REST API
+- **[`Task 2`](./task2/README.md)** – Introduction to the Express framework and REST APIs
+- **[`Task 3`](./task3/README.md)** – Input validation and MVC folder structure (Book API)
+- **[`Mini Project`](./mini-project/README.md)** – Simple E-Commerce application using MVC, Express, and ES6+ modules
 
 ---
 
-### 🔹 Part 1: Basic HTTP Server
+## Notes
 
-Create a Node.js server running on **port 3000** with the following routes:
+Each folder contains its own implementation and demonstrates specific backend concepts, progressively building toward a complete application structure.
 
-- **GET /**  
-  **Respond with the "Welcome to the Home Page"**  
+Feel free to explore each task to understand the concepts covered.
 
-- **GET /info**  
-**Respond with the message "This is in information page"**  
+## How to Run the Servers
 
-- **POST /submit**  
-**Respond with The exact same JSON data that was sent in the request body.**  
-
----
-
-### 🔹 Part 2: Student REST API
-
-Create another Node.js server running on **port 4000**.
-
-#### Requirements:
-- Use an **in-memory array** called `students`
-- Each student object contains:
-- `id`
-- `name`
-
-#### Implement the following routes:
-
-- **GET /students**  
-**Respond with:**  
-A JSON array containing all students.
-
-- **POST /students**  
-**Respond with:**  
-  The newly created student object (with a unique `id`).
-
-- **PUT /students/:id**  
-**Respond with:**  
-  The updated student object if found  
-  An error message if the student does not exist
-
-- **DELETE /students/:id**  
-**Respond with:**  
-  A confirmation message if deleted  
-  An error message if the student does not exist
-
----
-
-## 🛠 Technologies Used
-
-- Node.js
-- JavaScript (Vanilla)
-- Core HTTP module (no frameworks)
-
----
-
-## ▶️ How to Run Task 1
+You first need to install the necessary dependencies (if any) within the directory of each task using the command:
 
 ```bash
-node task1.js
+npm install
 ```
-or if nodemon is avaliable
+
+Then, you can start the server using the command:
 
 ```bash
-nodemon task1.js
+npm run dev
 ```
