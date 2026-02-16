@@ -16,12 +16,10 @@ const productModel = new mongoose.Schema({
   productId: {
     type: String,
     required: true,
-    unique: true,
   },
   productName: {
     type: String,
     required: true,
-    unique: true,
     minlength: 5,
   },
   productQuantity: {
@@ -39,7 +37,7 @@ const orderModel = new mongoose.Schema(
       unique: true,
     },
     user: {
-      type: [userModel],
+      type: userModel,
       required: true,
     },
 

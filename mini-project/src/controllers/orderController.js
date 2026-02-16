@@ -7,7 +7,7 @@ import { Product } from "../models/product.js";
 
 export const getAllOrder = async (req, res) => {
   try {
-    const orders = await Order.findOne();
+    const orders = await Order.find();
     return res.status(200).json(orders);
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
@@ -36,33 +36,40 @@ export const createOrder = async (req, res) => {
   try {
     const { userName, userAddress } = req.body;
     const userCart = await Cart.findOne();
+    if (userCart.products.length == 0) {
+      return res.status(400).json({ error: "Cart is empty" });
+    }
     let total = 0;
 
+    const productList = await Product.find();
     for (const item of userCart.products) {
-      const product = await Product.findOne({ productId: item.productId });
+      const product = productList.find((p) => p.productId == item.productId);
       if (product) {
+        console.log(
+          `Product: ${product.name}, Quantity: ${item.productQuantity}, Price: ${product.price}`,
+        );
         total += item.productQuantity * product.price;
       }
     }
 
+    console.log("Total price:", total);
+
     const orderId = nanoid(7);
     const newOrder = new Order({
       orderId,
-      user: [
-        {
-          userName,
-          userAddress,
-        },
-      ],
+      user: {
+        userName,
+        userAddress,
+      },
+
       products: userCart.products,
       totalPrice: total,
     });
-
     userCart.products = [];
     await newOrder.save();
     await userCart.save();
     return res.status(201).json(newOrder);
   } catch (err) {
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: err.message });
   }
 };

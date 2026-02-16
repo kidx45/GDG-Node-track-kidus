@@ -5,7 +5,10 @@ import { Product } from "../models/product.js";
 
 export const getCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne();
+    let cart = await Cart.findOne();
+    if (!cart) {
+      cart = await Cart.create({ products: [] });
+    }
     return res.status(200).json(cart);
   } catch (err) {
     return res.status(500).json({ error: "Server error" });
